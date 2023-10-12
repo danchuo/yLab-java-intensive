@@ -1,0 +1,81 @@
+package org.wallet.service;
+
+import java.util.Optional;
+import org.wallet.exception.PlayerAlreadyExistException;
+import org.wallet.model.Player;
+import org.wallet.repository.PlayerRepository;
+import org.wallet.utils.StringHasher;
+
+/**
+ * The `PlayerService` class provides functionality to interact with player-related operations such
+ * as player registration, login, and checking player existence.
+ */
+public class PlayerService {
+
+  /** The repository for managing players. */
+  private final PlayerRepository playerRepository;
+
+  /**
+   * Constructs a new `PlayerService` with the specified player repository.
+   *
+   * @param playerRepository The repository for managing players.
+   */
+  public PlayerService(PlayerRepository playerRepository) {
+    this.playerRepository = playerRepository;
+  }
+
+  /**
+   * Checks if a player with the given login exists.
+   *
+   * @param login The login of the player to check.
+   * @return `true` if the player exists, `false` otherwise.
+   */
+  public boolean isPlayerExist(String login) {
+    return playerRepository.getPlayerByLogin(login).isPresent();
+  }
+
+  /**
+   * Registers a new player with the specified login and password. If a player with the same login
+   * already exists, a `PlayerAlreadyExistException` is thrown. The password is hashed before
+   * storing it in the player's information.
+   *
+   * @param login The login of the player to register.
+   * @param password The password of the player to register.
+   * @return The registered player.
+   * @throws PlayerAlreadyExistException If a player with the same login already exists.
+   */
+  public Player registerPlayer(String login, String password) {
+    if (isPlayerExist(login)) {
+      throw new PlayerAlreadyExistException();
+    }
+
+    String hashedPassword = StringHasher.hashString(password);
+
+    Player player = new Player(login, hashedPassword);
+
+    playerRepository.addPlayer(player);
+
+    return player;
+  }
+
+  /**
+   * Attempts to log in a player with the specified login and password. If a player with the
+   * provided login and password is found, the player is considered logged in, and an optional
+   * containing the player is returned. If the login or password is incorrect or the player does not
+   * exist, an empty optional is returned.
+   *
+   * @param login The login of the player to log in.
+   * @param password The password of the player to log in.
+   * @return An optional containing the logged-in player, or an empty optional if login fails.
+   */
+  public Optional<Player> login(String login, String password) {
+    var player = playerRepository.getPlayerByLogin(login);
+
+    if (player.isPresent()
+        && StringHasher.hashString(password).equals(player.get().getPassword())) {
+      return player;
+    }
+
+    return Optional.empty();
+  }
+}
