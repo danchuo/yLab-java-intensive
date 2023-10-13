@@ -3,6 +3,8 @@ package org.wallet.utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
+
 import org.wallet.model.Player;
 import org.wallet.model.Transaction;
 import org.wallet.model.TransactionType;
@@ -32,7 +34,7 @@ public class ConsoleParser {
     int transactionTypeChoice = askNumber("transaction type (1 for CREDIT, 2 for DEBIT)", 1, 2);
     TransactionType type =
         transactionTypeChoice == 1 ? TransactionType.CREDIT : TransactionType.DEBIT;
-    long amount = askNumber("transaction amount", 1, 1000);
+    BigDecimal amount = BigDecimal.valueOf(askNumber("transaction amount", 1, 1000));
 
     return new Transaction(playerLogin, transactionId, type, amount);
   }

@@ -1,10 +1,11 @@
 package org.wallet.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.wallet.exception.PlayerAlreadyExistException;
 import org.wallet.model.Player;
@@ -19,42 +20,48 @@ public class InMemoryPlayerRepositoryTest {
     }
 
     @Test
+    @DisplayName("Empty repository should return an empty list of players")
     public void emptyRepository_getPlayers_returnsEmptyList() {
         List<Player> players = playerRepository.getPlayers();
-        assertTrue(players.isEmpty());
+        assertThat(players).isEmpty();
     }
 
     @Test
+    @DisplayName("Adding a player to the repository should store the player")
     public void addPlayerAndGetPlayers_playerAdded() {
         Player player = new Player("testLogin", "testPassword");
         playerRepository.addPlayer(player);
 
         List<Player> players = playerRepository.getPlayers();
-        assertEquals(1, players.size());
-        assertEquals(player, players.get(0));
+        assertThat(players).hasSize(1);
+        assertThat(players).contains(player);
     }
 
     @Test
+    @DisplayName("Getting a player by login not found should return an empty Optional")
     public void getPlayerByLogin_notFound_returnsEmptyOptional() {
         Optional<Player> player = playerRepository.getPlayerByLogin("nonExistentLogin");
-        assertFalse(player.isPresent());
+        assertThat(player).isEmpty();
     }
 
     @Test
+    @DisplayName("Getting a player by login found should return an Optional with the player")
     public void getPlayerByLogin_found_returnsOptionalWithPlayer() {
         Player player = new Player("testLogin", "testPassword");
         playerRepository.addPlayer(player);
 
         Optional<Player> foundPlayer = playerRepository.getPlayerByLogin("testLogin");
-        assertTrue(foundPlayer.isPresent());
-        assertEquals(player, foundPlayer.get());
+        assertThat(foundPlayer).isPresent();
+        assertThat(foundPlayer).hasValue(player);
     }
 
     @Test
+    @DisplayName("Adding a player that already exists should throw PlayerAlreadyExistException")
     public void addPlayerAlreadyExists_throwsPlayerAlreadyExistException() {
         Player player = new Player("testLogin", "testPassword");
         playerRepository.addPlayer(player);
 
-        assertThrows(PlayerAlreadyExistException.class, () -> playerRepository.addPlayer(player));
+        assertThatThrownBy(() -> playerRepository.addPlayer(player))
+                .isInstanceOf(PlayerAlreadyExistException.class);
     }
 }

@@ -1,10 +1,11 @@
-package org.wallet.console;
+package org.wallet.in;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.wallet.application.WalletApplication;
@@ -54,10 +55,11 @@ public class ConsoleInteraction {
     writer.write("Please select an option:\n");
     writer.write("1. Register\n");
     writer.write("2. Login\n");
-    writer.write("3. Exit\n");
+    writer.write("3. Logs\n");
+    writer.write("4. Exit\n");
     writer.flush();
 
-    int option = consoleParser.askNumber("option number", 1, 3);
+    int option = consoleParser.askNumber("option number", 1, 4);
 
     switch (option) {
       case 1:
@@ -67,6 +69,9 @@ public class ConsoleInteraction {
         login();
         break;
       case 3:
+        logs();
+        break;
+      case 4:
         System.exit(0);
         break;
       default:
@@ -74,6 +79,25 @@ public class ConsoleInteraction {
         writer.flush();
         startSession();
     }
+  }
+
+  /**
+   * Displays the log messages to the console, or a message if there are no logs available.
+   *
+   * @throws IOException If an I/O error occurs while writing to the console.
+   */
+  private void logs() throws IOException {
+    var logs = walletApplication.getLogMessages();
+    if (logs.isEmpty()) {
+      writer.write("No logs available.\n");
+    } else {
+      writer.write("Log Messages:\n");
+      for (var logMessage : logs) {
+        writer.write(String.valueOf(logMessage));
+      }
+    }
+    writer.flush();
+    startSession();
   }
 
   /**
@@ -158,7 +182,7 @@ public class ConsoleInteraction {
    * @throws IOException If an I/O error occurs.
    */
   private void checkBalance() throws IOException {
-    long balance = walletApplication.getCurrentPlayer().getBalance();
+    BigDecimal balance = walletApplication.getCurrentPlayer().getBalance();
     writer.write("Your balance: " + balance + "\n");
     writer.flush();
     playerMenu();

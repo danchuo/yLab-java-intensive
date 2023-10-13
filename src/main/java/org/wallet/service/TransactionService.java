@@ -1,5 +1,6 @@
 package org.wallet.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.wallet.exception.InsufficientMoneyException;
 import org.wallet.exception.TransactionAlreadyExistException;
@@ -43,7 +44,7 @@ public class TransactionService {
    * @param transaction The credit transaction to process.
    */
   private void processCreditTransaction(Player player, Transaction transaction) {
-    long amount = transaction.amount();
+    BigDecimal amount = transaction.amount();
     player.credit(amount);
   }
 
@@ -57,7 +58,7 @@ public class TransactionService {
    *     transaction.
    */
   private void processDebitTransaction(Player player, Transaction transaction) {
-    long amount = transaction.amount();
+    BigDecimal amount = transaction.amount();
     if (player.canDebit(amount)) {
       player.debit(amount);
     } else {
