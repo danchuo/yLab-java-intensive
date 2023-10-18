@@ -34,7 +34,7 @@ public class TransactionService {
    * @return `true` if the transaction exists, `false` otherwise.
    */
   public boolean isTransactionExist(String transactionId) {
-    return transactionRepository.getTransactionById(transactionId).isPresent();
+    return transactionRepository.isTransactionExist(transactionId);
   }
 
   /**
@@ -76,16 +76,16 @@ public class TransactionService {
    * @throws TransactionAlreadyExistException If a transaction with the same ID already exists.
    */
   public void registerTransaction(Player player, Transaction transaction) {
-    if (transactionRepository.getTransactionById(transaction.transactionId()).isEmpty()) {
-      if (transaction.type() == TransactionType.CREDIT) {
-        processCreditTransaction(player, transaction);
-      } else if (transaction.type() == TransactionType.DEBIT) {
-        processDebitTransaction(player, transaction);
+      if (isTransactionExist(transaction.transactionId())) {
+          throw new TransactionAlreadyExistException();
+      } else {
+          if (transaction.type() == TransactionType.CREDIT) {
+              processCreditTransaction(player, transaction);
+          } else if (transaction.type() == TransactionType.DEBIT) {
+              processDebitTransaction(player, transaction);
+          }
+          transactionRepository.addTransaction(transaction);
       }
-      transactionRepository.addTransaction(transaction);
-    } else {
-      throw new TransactionAlreadyExistException();
-    }
   }
 
   /**

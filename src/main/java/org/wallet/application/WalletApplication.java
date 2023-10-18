@@ -112,6 +112,7 @@ public class WalletApplication {
     if (currentPlayer != null) {
       try {
         transactionService.registerTransaction(currentPlayer, transaction);
+        playerService.updatePlayer(currentPlayer);
         auditService.log(
             transaction.type() == TransactionType.DEBIT ? LogAction.DEBIT : LogAction.CREDIT,
             currentPlayer.getLogin(),

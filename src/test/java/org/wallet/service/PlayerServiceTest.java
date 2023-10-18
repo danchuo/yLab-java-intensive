@@ -3,6 +3,7 @@ package org.wallet.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,8 +29,7 @@ public class PlayerServiceTest {
   @Test
   @DisplayName("Checking if an existing player exists should return true")
   public void isPlayerExist_existingPlayer_shouldReturnTrue() {
-    when(playerRepository.getPlayerByLogin(TEST_USER))
-            .thenReturn(Optional.of(new Player(TEST_USER, "hashedPassword")));
+    when(playerRepository.isPlayerExist(TEST_USER)).thenReturn(true);
 
     boolean result = playerService.isPlayerExist(TEST_USER);
 
@@ -39,7 +39,7 @@ public class PlayerServiceTest {
   @Test
   @DisplayName("Checking if a non-existing player exists should return false")
   public void isPlayerExist_nonExistingPlayer_shouldReturnFalse() {
-    when(playerRepository.getPlayerByLogin(TEST_USER)).thenReturn(Optional.empty());
+    when(playerRepository.isPlayerExist(TEST_USER)).thenReturn(false);
 
     boolean result = playerService.isPlayerExist(TEST_USER);
 
@@ -54,20 +54,19 @@ public class PlayerServiceTest {
     Player registeredPlayer = playerService.registerPlayer(TEST_USER, TEST_PASSWORD);
 
     assertThat(registeredPlayer)
-            .isNotNull()
-            .extracting(Player::getLogin, Player::getPassword)
-            .containsExactly(TEST_USER, StringHasher.hashString(TEST_PASSWORD));
+        .isNotNull()
+        .extracting(Player::getLogin, Player::getPassword)
+        .containsExactly(TEST_USER, StringHasher.hashString(TEST_PASSWORD));
   }
 
   @Test
   @DisplayName("Registering an existing player should throw PlayerAlreadyExistException")
   public void registerPlayer_existingPlayer_shouldThrowPlayerAlreadyExistException() {
-    when(playerRepository.getPlayerByLogin(TEST_USER))
-            .thenReturn(Optional.of(new Player(TEST_USER, StringHasher.hashString(TEST_PASSWORD))));
+    when(playerRepository.isPlayerExist(TEST_USER)).thenReturn(true);
 
-    assertThatThrownBy(() ->
-            playerService.registerPlayer(TEST_USER, StringHasher.hashString(TEST_PASSWORD)))
-            .isInstanceOf(PlayerAlreadyExistException.class);
+    assertThatThrownBy(
+            () -> playerService.registerPlayer(TEST_USER, StringHasher.hashString(TEST_PASSWORD)))
+        .isInstanceOf(PlayerAlreadyExistException.class);
   }
 
   @Test
@@ -75,14 +74,11 @@ public class PlayerServiceTest {
   public void login_validCredentials_shouldReturnLoggedInPlayer() {
     String hashedPassword = StringHasher.hashString(TEST_PASSWORD);
     when(playerRepository.getPlayerByLogin(TEST_USER))
-            .thenReturn(Optional.of(new Player(TEST_USER, hashedPassword)));
+        .thenReturn(Optional.of(new Player(TEST_USER, hashedPassword)));
 
     Optional<Player> loggedInPlayer = playerService.login(TEST_USER, TEST_PASSWORD);
 
-    assertThat(loggedInPlayer)
-            .isPresent()
-            .map(Player::getLogin)
-            .isEqualTo(Optional.of(TEST_USER));
+    assertThat(loggedInPlayer).isPresent().map(Player::getLogin).isEqualTo(Optional.of(TEST_USER));
   }
 
   @Test
@@ -90,7 +86,7 @@ public class PlayerServiceTest {
   public void login_invalidPassword_shouldReturnEmptyOptional() {
     String hashedPassword = StringHasher.hashString("differentPassword");
     when(playerRepository.getPlayerByLogin(TEST_USER))
-            .thenReturn(Optional.of(new Player(TEST_USER, hashedPassword)));
+        .thenReturn(Optional.of(new Player(TEST_USER, hashedPassword)));
 
     Optional<Player> loggedInPlayer = playerService.login(TEST_USER, TEST_PASSWORD);
 
@@ -105,5 +101,18 @@ public class PlayerServiceTest {
     Optional<Player> loggedInPlayer = playerService.login(TEST_USER, TEST_PASSWORD);
 
     assertThat(loggedInPlayer).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Update player balance")
+  void testUpdatePlayer() {
+    Player player = new Player(TEST_USER, TEST_PASSWORD);
+    when(playerRepository.getPlayerByLogin(TEST_USER)).thenReturn(Optional.of(player));
+
+    player.credit(BigDecimal.TEN);
+    playerService.updatePlayer(player);
+
+    assertThat(player.getBalance()).isEqualTo(BigDecimal.TEN);
+    verify(playerRepository, times(1)).updatePlayerBalance(player);
   }
 }

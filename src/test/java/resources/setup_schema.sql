@@ -1,0 +1,2 @@
+CREATE SCHEMA wallet;
+CREATE SCHEMA wallet_log;

@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: 'java-postgres'
+    environment:
+      - 'POSTGRES_USER=danchuo'
+      - 'POSTGRES_PASSWORD=helpmepls1'
+      - 'POSTGRES_DB=wallet'
+      - 'POSTGRES_LOG_STATEMENTS=all'
+    ports:
+      - "49155:5432"
+    volumes:
+      - ./setup_schema.sql:/docker-entrypoint-initdb.d/init-script.sql

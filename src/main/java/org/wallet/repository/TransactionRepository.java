@@ -40,4 +40,12 @@ public interface TransactionRepository {
    * @return A list of transactions associated with the specified player.
    */
   List<Transaction> getTransactionsByPlayerLogin(String playerLogin);
+
+  /**
+   * Checks whether a player with the given login exists in the data store.
+   *
+   * @param transactionId Id of the transaction to check for existence.
+   * @return `true` if the transaction exists; otherwise, `false`.
+   */
+  boolean isTransactionExist(String transactionId);
 }

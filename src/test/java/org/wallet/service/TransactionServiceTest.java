@@ -36,11 +36,7 @@ public class TransactionServiceTest {
   @Test
   @DisplayName("When a transaction with a given ID exists, isTransactionExist should return true")
   void givenTransactionIdExists_whenIsTransactionExist_thenTrue() {
-    when(transactionRepository.getTransactionById("testTransactionId"))
-        .thenReturn(
-            Optional.of(
-                new Transaction(
-                    "testPlayer", "testTransactionId", TransactionType.CREDIT, fromLong(100))));
+    when(transactionRepository.isTransactionExist("testTransactionId")).thenReturn(true);
 
     boolean result = transactionService.isTransactionExist("testTransactionId");
 
@@ -118,8 +114,7 @@ public class TransactionServiceTest {
     Transaction existingTransaction =
         new Transaction("testPlayer", "testTransactionId", TransactionType.CREDIT, fromLong(100));
 
-    when(transactionRepository.getTransactionById("testTransactionId"))
-        .thenReturn(Optional.of(existingTransaction));
+    when(transactionRepository.isTransactionExist("testTransactionId")).thenReturn(true);
 
     assertThatThrownBy(() -> transactionService.registerTransaction(player, existingTransaction))
         .isInstanceOf(TransactionAlreadyExistException.class);

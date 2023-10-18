@@ -1,10 +1,10 @@
 package org.wallet.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.wallet.log.LogAction;
 import org.wallet.model.Log;
+import org.wallet.repository.LogRepository;
 
 /**
  * The {@code AuditService} class is responsible for logging audit actions. It can log various types
@@ -13,27 +13,31 @@ import org.wallet.model.Log;
  */
 public class AuditService {
 
-    /** Collection to store log messages. */
-    private final List<Log> logMessages = new ArrayList<>();
+  /** Collection to store log messages. */
+  private final LogRepository logRepository;
 
-    /**
-     * Logs an audit action with the specified parameters.
-     *
-     * @param action The type of audit action (e.g., AUTHORIZATION, DEBIT, CREDIT, EXIT).
-     * @param username The username associated with the action.
-     * @param details Additional details or information about the action.
-     */
-    public void log(LogAction action, String username, String details) {
-        Log log = new Log(action, username, details);
-        logMessages.add(log);
-    }
+  public AuditService(LogRepository logRepository) {
+    this.logRepository = logRepository;
+  }
 
-    /**
-     * Get the list of log messages.
-     *
-     * @return List of log messages.
-     */
-    public List<Log> getLogMessages() {
-        return Collections.unmodifiableList(logMessages);
-    }
+  /**
+   * Logs an audit action with the specified parameters.
+   *
+   * @param action The type of audit action (e.g., AUTHORIZATION, DEBIT, CREDIT, EXIT).
+   * @param username The username associated with the action.
+   * @param details Additional details or information about the action.
+   */
+  public void log(LogAction action, String username, String details) {
+    Log log = new Log(action, username, details);
+    logRepository.addLog(log);
+  }
+
+  /**
+   * Get the list of log messages.
+   *
+   * @return List of log messages.
+   */
+  public List<Log> getLogMessages() {
+    return Collections.unmodifiableList(logRepository.getLogs());
+  }
 }
