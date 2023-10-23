@@ -1,9 +1,9 @@
-package org.wallet.service;
+package org.wallet.domain.service;
 
 import java.util.Optional;
 import org.wallet.exception.PlayerAlreadyExistException;
-import org.wallet.model.Player;
-import org.wallet.repository.PlayerRepository;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.repository.player.PlayerRepository;
 import org.wallet.utils.StringHasher;
 
 /**

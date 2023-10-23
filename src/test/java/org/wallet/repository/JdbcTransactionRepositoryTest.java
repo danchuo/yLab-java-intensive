@@ -15,9 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.wallet.domain.repository.DatabaseConnection;
+import org.wallet.domain.repository.transaction.JdbcTransactionRepository;
+import org.wallet.domain.repository.LiquibaseManager;
+import org.wallet.domain.repository.transaction.TransactionRepository;
 import org.wallet.exception.TransactionAlreadyExistException;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
 
 @Testcontainers
 public class JdbcTransactionRepositoryTest {

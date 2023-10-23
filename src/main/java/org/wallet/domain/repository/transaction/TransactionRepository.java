@@ -1,8 +1,8 @@
-package org.wallet.repository;
+package org.wallet.domain.repository.transaction;
 
 import java.util.List;
 import java.util.Optional;
-import org.wallet.model.Transaction;
+import org.wallet.domain.model.Transaction;
 
 /**
  * The {@code TransactionRepository} interface defines methods for interacting with transaction

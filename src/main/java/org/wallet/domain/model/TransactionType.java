@@ -1,4 +1,4 @@
-package org.wallet.model;
+package org.wallet.domain.model;
 
 /**
  * The {@code TransactionType} enumeration represents the type of a financial transaction. It can be

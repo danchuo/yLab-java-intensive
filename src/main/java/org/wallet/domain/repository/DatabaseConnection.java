@@ -1,4 +1,6 @@
-package org.wallet.repository;
+package org.wallet.domain.repository;
+
+import org.wallet.domain.repository.player.JdbcPlayerRepository;
 
 import java.io.IOException;
 import java.io.InputStream;

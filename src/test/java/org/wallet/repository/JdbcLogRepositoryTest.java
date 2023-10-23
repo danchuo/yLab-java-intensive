@@ -13,8 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.wallet.log.LogAction;
-import org.wallet.model.Log;
+import org.wallet.domain.repository.DatabaseConnection;
+import org.wallet.domain.repository.log.JdbcLogRepository;
+import org.wallet.domain.repository.LiquibaseManager;
+import org.wallet.domain.repository.log.LogRepository;
+import org.wallet.domain.model.LogAction;
+import org.wallet.domain.model.Log;
 
 @Testcontainers
 public class JdbcLogRepositoryTest {

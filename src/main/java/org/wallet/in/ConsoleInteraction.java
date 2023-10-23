@@ -10,9 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.wallet.application.WalletApplication;
 import org.wallet.exception.PlayerNotFoundException;
-import org.wallet.model.Player;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
 import org.wallet.utils.ConsoleParser;
 
 /**

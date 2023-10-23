@@ -3,14 +3,14 @@ package org.wallet;
 import java.io.IOException;
 import org.wallet.application.WalletApplication;
 import org.wallet.in.ConsoleInteraction;
-import org.wallet.repository.DatabaseConnection;
-import org.wallet.repository.JdbcLogRepository;
-import org.wallet.repository.JdbcPlayerRepository;
-import org.wallet.repository.JdbcTransactionRepository;
-import org.wallet.repository.LiquibaseManager;
-import org.wallet.service.AuditService;
-import org.wallet.service.PlayerService;
-import org.wallet.service.TransactionService;
+import org.wallet.domain.repository.DatabaseConnection;
+import org.wallet.domain.repository.log.JdbcLogRepository;
+import org.wallet.domain.repository.player.JdbcPlayerRepository;
+import org.wallet.domain.repository.transaction.JdbcTransactionRepository;
+import org.wallet.domain.repository.LiquibaseManager;
+import org.wallet.domain.service.AuditService;
+import org.wallet.domain.service.PlayerService;
+import org.wallet.domain.service.TransactionService;
 
 /** The `Main` class is the entry point for the application. */
 public final class Main {

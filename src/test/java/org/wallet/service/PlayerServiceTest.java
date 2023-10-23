@@ -8,9 +8,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.wallet.domain.service.PlayerService;
 import org.wallet.exception.PlayerAlreadyExistException;
-import org.wallet.model.Player;
-import org.wallet.repository.PlayerRepository;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.repository.player.PlayerRepository;
 import org.wallet.utils.StringHasher;
 
 public class PlayerServiceTest {

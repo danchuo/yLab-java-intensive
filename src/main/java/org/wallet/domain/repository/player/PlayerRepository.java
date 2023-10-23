@@ -1,8 +1,8 @@
-package org.wallet.repository;
+package org.wallet.domain.repository.player;
 
 import java.util.List;
 import java.util.Optional;
-import org.wallet.model.Player;
+import org.wallet.domain.model.Player;
 
 /**
  * The {@code PlayerRepository} interface defines methods for managing player data. Implementations

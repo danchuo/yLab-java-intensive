@@ -5,9 +5,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.wallet.model.Player;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
 
 public class ConsoleParser {
 

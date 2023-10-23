@@ -12,13 +12,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.wallet.exception.PlayerNotFoundException;
 import org.wallet.exception.UnauthorizedAccessException;
-import org.wallet.log.LogAction;
-import org.wallet.model.Player;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
-import org.wallet.service.AuditService;
-import org.wallet.service.PlayerService;
-import org.wallet.service.TransactionService;
+import org.wallet.domain.model.LogAction;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
+import org.wallet.domain.service.AuditService;
+import org.wallet.domain.service.PlayerService;
+import org.wallet.domain.service.TransactionService;
 import org.wallet.utils.BigDecimalUtils;
 
 @ExtendWith(MockitoExtension.class)

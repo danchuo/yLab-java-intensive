@@ -1,4 +1,4 @@
-package org.wallet.repository;
+package org.wallet.domain.repository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +9,7 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.wallet.domain.repository.player.JdbcPlayerRepository;
 
 /**
  * The `LiquibaseManager` class is responsible for managing database schema changes using Liquibase.

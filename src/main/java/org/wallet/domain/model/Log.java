@@ -1,9 +1,8 @@
-package org.wallet.model;
+package org.wallet.domain.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.Data;
-import org.wallet.log.LogAction;
 
 /** The `Log` class represents information about system logs. */
 @Data

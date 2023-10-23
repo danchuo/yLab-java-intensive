@@ -1,4 +1,4 @@
-package org.wallet.log;
+package org.wallet.domain.model;
 
 /**
  * The {@code LogAction} enum represents different actions for logging in a financial application.

@@ -1,4 +1,4 @@
-package org.wallet.repository;
+package org.wallet.domain.repository.player;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -8,8 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.wallet.domain.repository.DatabaseConnection;
 import org.wallet.exception.PlayerAlreadyExistException;
-import org.wallet.model.Player;
+import org.wallet.domain.model.Player;
 
 /**
  * The `JdbcPlayerRepository` class is an implementation of the `PlayerRepository` interface. It

@@ -1,7 +1,7 @@
-package org.wallet.repository;
+package org.wallet.domain.repository.log;
 
 import java.util.List;
-import org.wallet.model.Log;
+import org.wallet.domain.model.Log;
 
 /**
  * The `LogRepository` interface defines methods for managing logs in a data store. Implementing

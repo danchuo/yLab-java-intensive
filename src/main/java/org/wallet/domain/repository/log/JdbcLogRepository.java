@@ -1,4 +1,4 @@
-package org.wallet.repository;
+package org.wallet.domain.repository.log;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,10 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.wallet.log.LogAction;
-import org.wallet.model.Log;
+
+import org.wallet.domain.repository.DatabaseConnection;
+import org.wallet.domain.model.LogAction;
+import org.wallet.domain.model.Log;
 
 /**
  * The `JdbcLogRepository` class is an implementation of the `LogRepository` interface. It provides

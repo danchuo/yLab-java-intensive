@@ -1,4 +1,4 @@
-package org.wallet.repository;
+package org.wallet.domain.repository.transaction;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -8,9 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.wallet.domain.repository.DatabaseConnection;
 import org.wallet.exception.TransactionAlreadyExistException;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
 
 /**
  * The `JdbcTransactionRepository` class is an implementation of the `TransactionRepository`

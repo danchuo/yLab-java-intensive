@@ -1,13 +1,13 @@
-package org.wallet.service;
+package org.wallet.domain.service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import org.wallet.exception.InsufficientMoneyException;
 import org.wallet.exception.TransactionAlreadyExistException;
-import org.wallet.model.Player;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
-import org.wallet.repository.TransactionRepository;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
+import org.wallet.domain.repository.transaction.TransactionRepository;
 
 /**
  * The `TransactionService` class provides functionality to interact with transactions and perform

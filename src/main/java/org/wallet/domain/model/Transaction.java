@@ -1,4 +1,4 @@
-package org.wallet.model;
+package org.wallet.domain.model;
 
 import java.math.BigDecimal;
 

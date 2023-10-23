@@ -1,10 +1,10 @@
-package org.wallet.service;
+package org.wallet.domain.service;
 
 import java.util.Collections;
 import java.util.List;
-import org.wallet.log.LogAction;
-import org.wallet.model.Log;
-import org.wallet.repository.LogRepository;
+import org.wallet.domain.model.LogAction;
+import org.wallet.domain.model.Log;
+import org.wallet.domain.repository.log.LogRepository;
 
 /**
  * The {@code AuditService} class is responsible for logging audit actions. It can log various types
