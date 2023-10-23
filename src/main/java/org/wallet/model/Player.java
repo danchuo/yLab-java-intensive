@@ -1,16 +1,19 @@
 package org.wallet.model;
 
+import java.math.BigDecimal;
+import lombok.Data;
 import org.wallet.exception.InsufficientMoneyException;
 
 /**
  * The {@code Player} class represents a player in a financial application. It includes information
  * such as the player's login, password, and balance.
  */
+@Data
 public class Player {
 
   private final String password;
   private final String login;
-  private long balance;
+  private BigDecimal balance;
 
   /**
    * Constructs a new player with the specified login and password.
@@ -21,34 +24,7 @@ public class Player {
   public Player(String login, String password) {
     this.password = password;
     this.login = login;
-    balance = 0;
-  }
-
-  /**
-   * Gets the password of the player.
-   *
-   * @return The password of the player.
-   */
-  public String getPassword() {
-    return password;
-  }
-
-  /**
-   * Gets the login of the player.
-   *
-   * @return The login of the player.
-   */
-  public String getLogin() {
-    return login;
-  }
-
-  /**
-   * Gets the balance of the player.
-   *
-   * @return The balance of the player.
-   */
-  public long getBalance() {
-    return balance;
+    balance = BigDecimal.valueOf(0);
   }
 
   /**
@@ -57,8 +33,8 @@ public class Player {
    * @param amount The amount to be debited.
    * @return {@code true} if the player can debit the specified amount, {@code false} otherwise.
    */
-  public boolean canDebit(long amount) {
-    return balance >= amount;
+  public boolean canDebit(BigDecimal amount) {
+    return balance.compareTo(amount) >= 0;
   }
 
   /**
@@ -67,9 +43,9 @@ public class Player {
    * @param amount The amount to be debited.
    * @throws InsufficientMoneyException If the player's balance is insufficient for the debit.
    */
-  public void debit(long amount) {
+  public void debit(BigDecimal amount) {
     if (canDebit(amount)) {
-      balance -= amount;
+      balance = balance.subtract(amount);
     } else {
       throw new InsufficientMoneyException();
     }
@@ -80,7 +56,7 @@ public class Player {
    *
    * @param amount The amount to be credited.
    */
-  public void credit(long amount) {
-    balance += amount;
+  public void credit(BigDecimal amount) {
+    balance = balance.add(amount);
   }
 }

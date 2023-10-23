@@ -32,4 +32,19 @@ public interface PlayerRepository {
    * @param player The player to be added.
    */
   void addPlayer(Player player);
+
+  /**
+   * Updates the balance of a player in the data store.
+   *
+   * @param player The player whose balance needs to be updated.
+   */
+  void updatePlayerBalance(Player player);
+
+  /**
+   * Checks whether a player with the given login exists in the data store.
+   *
+   * @param login The login of the player to check for existence.
+   * @return `true` if the player exists; otherwise, `false`.
+   */
+  boolean isPlayerExist(String login);
 }

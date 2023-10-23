@@ -1,8 +1,11 @@
 package org.wallet.application;
 
 import java.util.List;
+import lombok.Getter;
 import org.wallet.exception.PlayerNotFoundException;
+import org.wallet.exception.UnauthorizedAccessException;
 import org.wallet.log.LogAction;
+import org.wallet.model.Log;
 import org.wallet.model.Player;
 import org.wallet.model.Transaction;
 import org.wallet.model.TransactionType;
@@ -21,7 +24,8 @@ public class WalletApplication {
   private final PlayerService playerService;
 
   private final AuditService auditService;
-  private Player currentPlayer;
+
+  @Getter private Player currentPlayer;
 
   /**
    * Creates a new instance of the {@code WalletApplication} class with the specified services.
@@ -37,15 +41,6 @@ public class WalletApplication {
     this.transactionService = transactionService;
     this.playerService = playerService;
     this.auditService = auditService;
-  }
-
-  /**
-   * Gets the currently logged-in player.
-   *
-   * @return The currently logged-in player, or {@code null} if no player is logged in.
-   */
-  public Player getCurrentPlayer() {
-    return currentPlayer;
   }
 
   /**
@@ -76,10 +71,15 @@ public class WalletApplication {
     }
   }
 
-  /** Logs out the currently logged-in player. */
+  /**
+   * Logs out the currently logged-in player. If there is a player logged in, this method logs the
+   * player out and sets the currentPlayer to null. If no player is logged in, it does nothing.
+   */
   public void logout() {
-    auditService.log(LogAction.EXIT, currentPlayer.getLogin(), "User logged out.");
-    currentPlayer = null;
+    if (currentPlayer != null) {
+      auditService.log(LogAction.EXIT, currentPlayer.getLogin(), "User logged out.");
+      currentPlayer = null;
+    }
   }
 
   /**
@@ -103,35 +103,49 @@ public class WalletApplication {
   }
 
   /**
-   * Registers a new transaction for the currently logged-in player.
+   * Registers a new transaction for the currently logged-in player. If no player is logged in, it
+   * does nothing.
    *
    * @param transaction The transaction to register.
    */
   public void registerTransaction(Transaction transaction) {
-    try {
-      transactionService.registerTransaction(currentPlayer, transaction);
-      auditService.log(
-          transaction.type() == TransactionType.DEBIT ? LogAction.DEBIT : LogAction.CREDIT,
-          currentPlayer.getLogin(),
-          "Transaction registered: " + transaction.transactionId());
-    } catch (IllegalArgumentException e) {
-      auditService.log(
-          transaction.type() == TransactionType.DEBIT ? LogAction.DEBIT : LogAction.CREDIT,
-          currentPlayer.getLogin(),
-          "Transaction failed: " + e.getMessage());
+    if (currentPlayer != null) {
+      try {
+        transactionService.registerTransaction(currentPlayer, transaction);
+        playerService.updatePlayer(currentPlayer);
+        auditService.log(
+            transaction.type() == TransactionType.DEBIT ? LogAction.DEBIT : LogAction.CREDIT,
+            currentPlayer.getLogin(),
+            "Transaction registered: " + transaction.transactionId());
+      } catch (IllegalArgumentException e) {
+        auditService.log(
+            transaction.type() == TransactionType.DEBIT ? LogAction.DEBIT : LogAction.CREDIT,
+            currentPlayer.getLogin(),
+            "Transaction failed: " + e.getMessage());
+      }
     }
   }
 
   /**
-   * Gets the transaction history of the currently logged-in player.
+   * Returns a list of transactions for the currently authenticated player. If no player is
+   * authenticated, an {@code UnauthorizedAccessException} is thrown.
    *
-   * @return A list of transactions for the current player, or an empty list if no player is logged
-   *     in.
+   * @return A list of transactions for the authenticated player.
+   * @throws UnauthorizedAccessException If no player is currently authenticated.
    */
   public List<Transaction> getTransactionOfCurrentPlayer() {
     if (currentPlayer == null) {
-      return List.of();
+      throw new UnauthorizedAccessException();
     }
     return transactionService.getTransactionByPlayer(currentPlayer);
+  }
+
+  /**
+   * Get the list of log messages.
+   *
+   * @return List of log messages.
+   */
+  public List<Log> getLogMessages() {
+    return auditService.getLogMessages();
   }
 }

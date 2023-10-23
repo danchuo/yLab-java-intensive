@@ -1,5 +1,6 @@
 package org.wallet.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.wallet.exception.InsufficientMoneyException;
 import org.wallet.exception.TransactionAlreadyExistException;
@@ -33,7 +34,7 @@ public class TransactionService {
    * @return `true` if the transaction exists, `false` otherwise.
    */
   public boolean isTransactionExist(String transactionId) {
-    return transactionRepository.getTransactionById(transactionId).isPresent();
+    return transactionRepository.isTransactionExist(transactionId);
   }
 
   /**
@@ -43,7 +44,7 @@ public class TransactionService {
    * @param transaction The credit transaction to process.
    */
   private void processCreditTransaction(Player player, Transaction transaction) {
-    long amount = transaction.amount();
+    BigDecimal amount = transaction.amount();
     player.credit(amount);
   }
 
@@ -57,7 +58,7 @@ public class TransactionService {
    *     transaction.
    */
   private void processDebitTransaction(Player player, Transaction transaction) {
-    long amount = transaction.amount();
+    BigDecimal amount = transaction.amount();
     if (player.canDebit(amount)) {
       player.debit(amount);
     } else {
@@ -75,16 +76,16 @@ public class TransactionService {
    * @throws TransactionAlreadyExistException If a transaction with the same ID already exists.
    */
   public void registerTransaction(Player player, Transaction transaction) {
-    if (transactionRepository.getTransactionById(transaction.transactionId()).isEmpty()) {
-      if (transaction.type() == TransactionType.CREDIT) {
-        processCreditTransaction(player, transaction);
-      } else if (transaction.type() == TransactionType.DEBIT) {
-        processDebitTransaction(player, transaction);
+      if (isTransactionExist(transaction.transactionId())) {
+          throw new TransactionAlreadyExistException();
+      } else {
+          if (transaction.type() == TransactionType.CREDIT) {
+              processCreditTransaction(player, transaction);
+          } else if (transaction.type() == TransactionType.DEBIT) {
+              processDebitTransaction(player, transaction);
+          }
+          transactionRepository.addTransaction(transaction);
       }
-      transactionRepository.addTransaction(transaction);
-    } else {
-      throw new TransactionAlreadyExistException();
-    }
   }
 
   /**

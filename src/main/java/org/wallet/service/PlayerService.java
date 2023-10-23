@@ -31,7 +31,7 @@ public class PlayerService {
    * @return `true` if the player exists, `false` otherwise.
    */
   public boolean isPlayerExist(String login) {
-    return playerRepository.getPlayerByLogin(login).isPresent();
+    return playerRepository.isPlayerExist(login);
   }
 
   /**
@@ -77,5 +77,16 @@ public class PlayerService {
     }
 
     return Optional.empty();
+  }
+
+  /**
+   * Updates the player's balance in the data store.
+   *
+   * <p>This method is a convenience method for updating the balance of a player in the data store.
+   *
+   * @param player The player whose balance needs to be updated.
+   */
+  public void updatePlayer(Player player) {
+    playerRepository.updatePlayerBalance(player);
   }
 }

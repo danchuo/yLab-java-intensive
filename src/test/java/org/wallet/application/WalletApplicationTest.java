@@ -1,68 +1,73 @@
 package org.wallet.application;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.wallet.exception.PlayerNotFoundException;
+import org.wallet.exception.UnauthorizedAccessException;
 import org.wallet.log.LogAction;
 import org.wallet.model.Player;
+import org.wallet.model.Transaction;
+import org.wallet.model.TransactionType;
 import org.wallet.service.AuditService;
 import org.wallet.service.PlayerService;
 import org.wallet.service.TransactionService;
+import org.wallet.utils.BigDecimalUtils;
 
+@ExtendWith(MockitoExtension.class)
 public class WalletApplicationTest {
 
   private static final String TEST_USER = "testUser";
   private static final String TEST_PASSWORD = "testPassword";
-  private WalletApplication walletApplication;
-  private TransactionService transactionService;
-  private PlayerService playerService;
-  private AuditService auditService;
-
-  @BeforeEach
-  public void setUp() {
-    transactionService = mock(TransactionService.class);
-    playerService = mock(PlayerService.class);
-    auditService = mock(AuditService.class);
-    walletApplication = new WalletApplication(transactionService, playerService, auditService);
-  }
+  @InjectMocks private WalletApplication walletApplication;
+  @Mock private TransactionService transactionService;
+  @Mock private PlayerService playerService;
+  @Mock private AuditService auditService;
 
   @Test
-  public void testRegisterPlayer() {
+  @DisplayName("Register Player should succeed")
+  public void registerPlayer_shouldSucceed() {
     Player registeredPlayer = new Player(TEST_USER, TEST_PASSWORD);
     when(playerService.registerPlayer(TEST_USER, TEST_PASSWORD)).thenReturn(registeredPlayer);
 
     walletApplication.registerPlayer(TEST_USER, TEST_PASSWORD);
 
-    assertEquals(registeredPlayer, walletApplication.getCurrentPlayer());
+    assertThat(walletApplication.getCurrentPlayer()).isEqualTo(registeredPlayer);
     verify(auditService).log(eq(LogAction.AUTHORIZATION), eq(TEST_USER), eq("User registered."));
   }
 
   @Test
-  public void testLoginSuccessful() {
+  @DisplayName("Login should succeed")
+  public void login_shouldSucceed() {
     Player loggedInPlayer = new Player(TEST_USER, TEST_PASSWORD);
-    when(playerService.login(TEST_USER, TEST_PASSWORD))
-        .thenReturn(java.util.Optional.of(loggedInPlayer));
+    when(playerService.login(TEST_USER, TEST_PASSWORD)).thenReturn(Optional.of(loggedInPlayer));
 
     walletApplication.login(TEST_USER, TEST_PASSWORD);
 
-    assertEquals(loggedInPlayer, walletApplication.getCurrentPlayer());
+    assertThat(walletApplication.getCurrentPlayer()).isEqualTo(loggedInPlayer);
     verify(auditService).log(eq(LogAction.AUTHORIZATION), eq(TEST_USER), eq("User logged in."));
   }
 
   @Test
-  public void testLoginFailed() {
-    when(playerService.login(TEST_USER, TEST_PASSWORD)).thenReturn(java.util.Optional.empty());
+  @DisplayName("Login should fail for nonexistent user")
+  public void login_shouldFailForNonexistentUser() {
+    when(playerService.login(TEST_USER, TEST_PASSWORD)).thenReturn(Optional.empty());
 
-    assertThrows(
-        PlayerNotFoundException.class, () -> walletApplication.login(TEST_USER, TEST_PASSWORD));
+    assertThatThrownBy(() -> walletApplication.login(TEST_USER, TEST_PASSWORD))
+        .isInstanceOf(PlayerNotFoundException.class);
     verify(auditService)
         .log(eq(LogAction.AUTHORIZATION), eq(TEST_USER), startsWith("Login failed:"));
   }
 
   @Test
+  @DisplayName("Logging out should set the current player to null and log the exit action")
   public void testLogout() {
     Player player = new Player(TEST_USER, TEST_PASSWORD);
     when(playerService.registerPlayer(TEST_USER, TEST_PASSWORD)).thenReturn(player);
@@ -70,28 +75,61 @@ public class WalletApplicationTest {
 
     walletApplication.logout();
 
-    assertNull(walletApplication.getCurrentPlayer());
+    assertThat(walletApplication.getCurrentPlayer()).isNull();
     verify(auditService).log(eq(LogAction.EXIT), eq(player.getLogin()), eq("User logged out."));
   }
 
   @Test
-  public void testIsPlayerExist() {
+  @DisplayName("Logout when currentPlayer is null should not log any action")
+  public void logout_whenCurrentPlayerIsNull_shouldNotLogAnyAction() {
+    walletApplication.logout();
+
+    verify(auditService, never()).log(any(), any(), any());
+  }
+
+  @Test
+  @DisplayName("Registering a transaction with currentPlayer null should not log any action")
+  public void registerTransaction_withCurrentPlayerNull_shouldNotLogAnyAction() {
+    Transaction testTransaction =
+        new Transaction(
+            "testPlayer",
+            "testTransactionId",
+            TransactionType.CREDIT,
+            BigDecimalUtils.fromLong(100));
+
+    walletApplication.registerTransaction(testTransaction);
+
+    verify(auditService, never()).log(any(), any(), any());
+  }
+
+  @Test
+  @DisplayName("Check if Player exists for existing player")
+  public void isPlayerExist_shouldReturnTrueForExistingPlayer() {
     when(playerService.isPlayerExist("testUser")).thenReturn(true);
     when(playerService.isPlayerExist("nonExistentUser")).thenReturn(false);
 
-    assertTrue(walletApplication.isPlayerExist("testUser"));
-    assertFalse(walletApplication.isPlayerExist("nonExistentUser"));
+    assertThat(walletApplication.isPlayerExist("testUser")).isTrue();
+    assertThat(walletApplication.isPlayerExist("nonExistentUser")).isFalse();
 
     verify(playerService, times(2)).isPlayerExist(anyString());
   }
 
   @Test
-  public void testIsTransactionExist() {
+  @DisplayName("Getting transactions with no authenticated player should throw an UnauthorizedAccessException")
+  public void getTransactionOfCurrentPlayer_withNoAuthenticatedPlayer_shouldThrowUnauthorizedAccessException() {
+    assertThatThrownBy(() -> walletApplication.getTransactionOfCurrentPlayer())
+            .isInstanceOf(UnauthorizedAccessException.class);
+  }
+
+
+  @Test
+  @DisplayName("Check if Transaction exists for existing transaction")
+  public void isTransactionExist_shouldReturnTrueForExistingTransaction() {
     when(transactionService.isTransactionExist("testTransactionId")).thenReturn(true);
     when(transactionService.isTransactionExist("nonExistentTransactionId")).thenReturn(false);
 
-    assertTrue(walletApplication.isTransactionExist("testTransactionId"));
-    assertFalse(walletApplication.isTransactionExist("nonExistentTransactionId"));
+    assertThat(walletApplication.isTransactionExist("testTransactionId")).isTrue();
+    assertThat(walletApplication.isTransactionExist("nonExistentTransactionId")).isFalse();
 
     verify(transactionService, times(2)).isTransactionExist(anyString());
   }

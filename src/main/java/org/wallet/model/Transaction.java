@@ -1,5 +1,7 @@
 package org.wallet.model;
 
+import java.math.BigDecimal;
+
 /**
  * The {@code Transaction} class represents a financial transaction associated with a player. It
  * includes information such as the player's login, transaction ID, transaction type, and amount.
@@ -10,4 +12,4 @@ package org.wallet.model;
  * @param amount The amount involved in the transaction.
  */
 public record Transaction(
-    String playerLogin, String transactionId, TransactionType type, long amount) {}
+    String playerLogin, String transactionId, TransactionType type, BigDecimal amount) {}

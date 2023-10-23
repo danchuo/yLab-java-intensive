@@ -1,26 +1,23 @@
 package org.wallet.service;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
+import java.util.Collections;
+import java.util.List;
 import org.wallet.log.LogAction;
+import org.wallet.model.Log;
+import org.wallet.repository.LogRepository;
 
 /**
- * The `AuditService` class provides logging functionality for auditing actions such as
- * authorization, debit, credit, and logout.
+ * The {@code AuditService} class is responsible for logging audit actions. It can log various types
+ * of actions, such as authorization, debit, credit, and exit. Log messages are stored in a
+ * collection for later retrieval.
  */
 public class AuditService {
 
-  /** The logger for auditing actions. */
-  private static final Logger LOGGER = LogManager.getLogger(AuditService.class);
+  /** Collection to store log messages. */
+  private final LogRepository logRepository;
 
-  static {
-    try {
-      Configurator.initialize(null, "log4j2.xml");
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> {}));
-    } catch (Exception ignored) {
-    }
+  public AuditService(LogRepository logRepository) {
+    this.logRepository = logRepository;
   }
 
   /**
@@ -31,16 +28,16 @@ public class AuditService {
    * @param details Additional details or information about the action.
    */
   public void log(LogAction action, String username, String details) {
-    String message =
-        switch (action) {
-          case AUTHORIZATION -> "User " + username + " logged in.";
-          case DEBIT -> "User " + username + " performed a debit transaction.";
-          case CREDIT -> "User " + username + " performed a credit transaction.";
-          case EXIT -> "User " + username + " logged out.";
-        };
+    Log log = new Log(action, username, details);
+    logRepository.addLog(log);
+  }
 
-    if (message != null) {
-      LOGGER.log(Level.INFO, message, new Object[] {username, details});
-    }
+  /**
+   * Get the list of log messages.
+   *
+   * @return List of log messages.
+   */
+  public List<Log> getLogMessages() {
+    return Collections.unmodifiableList(logRepository.getLogs());
   }
 }

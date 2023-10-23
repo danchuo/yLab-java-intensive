@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <changeSet id="004-insert-players-1" author="danchuo" >
+        <insert tableName="players" schemaName="wallet">
+            <column name="login" value="111"/>
+            <column name="password" value="f6e0a1e2ac41945a9aa7ff8a8aaa0cebc12a3bcc981a929ad5cf810a090e11ae"/>
+            <column name="balance" valueNumeric="100.00"/>
+        </insert>
+        <insert tableName="players" schemaName="wallet">
+            <column name="login" value="222"/>
+            <column name="password" value="9b871512327c09ce91dd649b3f96a63b7408ef267c8cc5710114e629730cb61f"/>
+            <column name="balance" valueNumeric="200.00"/>
+        </insert>
+
+        <insert tableName="transactions" schemaName="wallet">
+            <column name="player_login" value="111"/>
+            <column name="transaction_id" value="1"/>
+            <column name="type" value="CREDIT"/>
+            <column name="amount" valueNumeric="100.00"/>
+        </insert>
+        <insert tableName="transactions" schemaName="wallet">
+            <column name="player_login" value="222"/>
+            <column name="transaction_id" value="2"/>
+            <column name="type" value="CREDIT"/>
+            <column name="amount" valueNumeric="200.00"/>
+        </insert>
+
+        <insert tableName="logs" schemaName="wallet">
+            <column name="timestamp" valueComputed="NOW()"/>
+            <column name="action" value="AUTHORIZATION"/>
+            <column name="username" value="111"/>
+            <column name="details" value="User 111 authorized successfully"/>
+        </insert>
+        <insert tableName="logs" schemaName="wallet">
+            <column name="timestamp" valueComputed="NOW()"/>
+            <column name="action" value="AUTHORIZATION"/>
+            <column name="username" value="222"/>
+            <column name="details" value="User 222 authorized successfully"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

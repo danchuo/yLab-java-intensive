@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:13.2-alpine'
+    environment:
+      - 'POSTGRES_USER=danchuo'
+      - 'POSTGRES_PASSWORD=helpmepls1'
+      - 'POSTGRES_DB=wallet'
+    volumes:
+      - ./setup_schema.sql:/docker-entrypoint-initdb.d/init-script.sql

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <changeSet id="001-create-players-table" author="danchuo" >
+        <createSequence sequenceName="players_id_seq" incrementBy="1" minValue="1"/>
+        <createTable tableName="players">
+            <column name="id" type="BIGINT" defaultValueComputed="nextval('players_id_seq'::regclass)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="NUMERIC">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="players"
+                             constraintName="uk_login"
+                             columnNames="login"/>
+    </changeSet>
+
+
+</databaseChangeLog>
