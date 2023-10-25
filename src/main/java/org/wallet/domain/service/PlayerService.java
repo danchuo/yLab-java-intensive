@@ -1,9 +1,9 @@
 package org.wallet.domain.service;
 
 import java.util.Optional;
-import org.wallet.exception.PlayerAlreadyExistException;
 import org.wallet.domain.model.Player;
 import org.wallet.domain.repository.player.PlayerRepository;
+import org.wallet.exception.PlayerAlreadyExistException;
 import org.wallet.utils.StringHasher;
 
 /**
@@ -89,4 +89,15 @@ public class PlayerService {
   public void updatePlayer(Player player) {
     playerRepository.updatePlayerBalance(player);
   }
+
+  /**
+   * Retrieves a player from the repository based on the provided login.
+   *
+   * @param login The login of the player to retrieve.
+   * @return An optional containing the player if found, or an empty optional if not found.
+   */
+  public Optional<Player> getPlayerByLogin(String login) {
+    return playerRepository.getPlayerByLogin(login);
+  }
+
 }

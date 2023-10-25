@@ -1,13 +1,11 @@
 package org.wallet.domain.repository;
 
-import org.wallet.domain.repository.player.JdbcPlayerRepository;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import org.wallet.domain.repository.player.JdbcPlayerRepository;
 
 /**
  * The `DatabaseConnection` class represents a database connection manager. It provides methods to
@@ -25,6 +23,7 @@ public class DatabaseConnection {
 
   static {
     try {
+      Class.forName("org.postgresql.Driver");
       Properties properties = new Properties();
       ClassLoader classLoader = JdbcPlayerRepository.class.getClassLoader();
       InputStream inputStream = classLoader.getResourceAsStream("application.properties");
@@ -32,7 +31,7 @@ public class DatabaseConnection {
       JDBC_URL = properties.getProperty("jdbc.url");
       JDBC_USER = properties.getProperty("jdbc.user");
       JDBC_PASSWORD = properties.getProperty("jdbc.password");
-    } catch (IOException ignored) {
+    } catch (Exception ignored) {
     }
   }
 

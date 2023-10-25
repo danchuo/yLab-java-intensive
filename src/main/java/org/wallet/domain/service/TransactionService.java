@@ -94,7 +94,7 @@ public class TransactionService {
    * @param player The player for whom to retrieve transactions.
    * @return A list of transactions associated with the player.
    */
-  public List<Transaction> getTransactionByPlayer(Player player) {
+  public List<Transaction> getTransactionsByPlayer(Player player) {
     return transactionRepository.getTransactionsByPlayerLogin(player.getLogin());
   }
 }

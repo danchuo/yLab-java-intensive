@@ -1,0 +1,278 @@
+openapi: 3.0.0
+info:
+  description: "Спецификация Wallet REST API"
+  title: "Wallet service"
+  version: "1.0"
+paths:
+  /register:
+    post:
+      tags:
+        - Пользователи
+      summary: Регистрация нового игрока
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistrationRequest"
+      responses:
+        "201":
+          description: Игрок успешно зарегистрирован
+        "400":
+          description: Ошибка валидации данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Пользователь уже существует
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /login:
+    post:
+      tags:
+        - Пользователи
+      summary: Авторизация игрока и получение JWT токена
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLoginRequest"
+      responses:
+        "200":
+          description: Игрок успешно авторизирован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                example:
+                  token: "jwt-token"
+        "400":
+          description: Ошибка валидации данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Неправильный логин или пароль
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /balance:
+    get:
+      tags:
+        - Финансовые операции
+      summary: Получение текущего баланса игрока
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jwtToken:
+                  type: string
+              required:
+                - jwtToken
+      responses:
+        "200":
+          description: Баланс игрока
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceResponse"
+        "400":
+          description: Ошибка валидации данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Неудачная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /transaction:
+    post:
+      tags:
+        - Финансовые операции
+      summary: Дебетование или кредитование средств со счета игрока
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+      responses:
+        "201":
+          description: Транзакция выполнена успешно
+        "400":
+          description: Ошибка валидации данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Неудачная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /transactions:
+    get:
+      tags:
+        - Финансовые операции
+      summary: Получение истории транзакций игрока
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jwtToken:
+                  type: string
+              required:
+                - jwtToken
+      responses:
+        "200":
+          description: Список транзакций
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionHistoryResponse"
+        "401":
+          description: Неудачная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /audit:
+    get:
+      tags:
+        - Аудит
+      summary: Получение аудита действий игроков
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: Список аудита
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditLogResponse"
+        "401":
+          description: Неудачная авторизация
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Статус-код
+          format: int32
+        message:
+          type: string
+          description: Сообщение
+
+    UserRegistrationRequest:
+      type: object
+      properties:
+        login:
+          type: string
+          description: Логин игрока
+        password:
+          type: string
+          description: Пароль игрока
+
+    UserLoginRequest:
+      type: object
+      properties:
+        login:
+          type: string
+          description: Логин игрока
+        password:
+          type: string
+          description: Пароль игрока
+
+    JwtTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT токен для авторизации
+
+    BalanceResponse:
+      type: object
+      properties:
+        balance:
+          type: number
+          description: Текущий баланс игрока
+
+    TransactionRequest:
+      type: object
+      required:
+        - jwtToken
+        - amount
+        - transactionId
+        - transactionType
+      properties:
+        jwtToken:
+          type: string
+          description: JWT-токен для аутентификации пользователя
+        amount:
+          type: number
+          description: Сумма для транзакции
+        transactionId:
+          type: string
+          description: Уникальный идентификатор транзакции
+          format: string
+        transactionType:
+          type: string
+          description: Тип транзакции (DEBIT или CREDIT)
+
+    TransactionHistoryResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          amount:
+            type: number
+            description: Сумма транзакции
+          transactionId:
+            type: string
+            description: Уникальный идентификатор транзакции
+          type:
+            type: string
+            description: Тип транзакции
+
+    AuditLogResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          action:
+            type: string
+            description: Действие, совершенное игроком
+          timestamp:
+            type: string
+            description: Временная метка действия
+            format: date-time
+          user:
+            type: string
+            description: Логин игрока
+          details:
+            type: string
+            description: Детали

@@ -137,7 +137,7 @@ public class TransactionServiceTest {
                 new Transaction(
                     "testPlayer", "transaction2", TransactionType.DEBIT, fromLong(30))));
 
-    List<Transaction> transactions = transactionService.getTransactionByPlayer(player);
+    List<Transaction> transactions = transactionService.getTransactionsByPlayer(player);
 
     assertThat(transactions).isNotEmpty().hasSize(2);
   }
@@ -149,7 +149,7 @@ public class TransactionServiceTest {
     when(transactionRepository.getTransactionsByPlayerLogin("testPlayer"))
         .thenReturn(new ArrayList<>());
 
-    List<Transaction> transactions = transactionService.getTransactionByPlayer(player);
+    List<Transaction> transactions = transactionService.getTransactionsByPlayer(player);
 
     assertThat(transactions).isEmpty();
   }

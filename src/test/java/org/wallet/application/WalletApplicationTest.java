@@ -67,27 +67,6 @@ public class WalletApplicationTest {
   }
 
   @Test
-  @DisplayName("Logging out should set the current player to null and log the exit action")
-  public void testLogout() {
-    Player player = new Player(TEST_USER, TEST_PASSWORD);
-    when(playerService.registerPlayer(TEST_USER, TEST_PASSWORD)).thenReturn(player);
-    walletApplication.registerPlayer(player.getLogin(), player.getPassword());
-
-    walletApplication.logout();
-
-    assertThat(walletApplication.getCurrentPlayer()).isNull();
-    verify(auditService).log(eq(LogAction.EXIT), eq(player.getLogin()), eq("User logged out."));
-  }
-
-  @Test
-  @DisplayName("Logout when currentPlayer is null should not log any action")
-  public void logout_whenCurrentPlayerIsNull_shouldNotLogAnyAction() {
-    walletApplication.logout();
-
-    verify(auditService, never()).log(any(), any(), any());
-  }
-
-  @Test
   @DisplayName("Registering a transaction with currentPlayer null should not log any action")
   public void registerTransaction_withCurrentPlayerNull_shouldNotLogAnyAction() {
     Transaction testTransaction =
