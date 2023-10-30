@@ -2,8 +2,8 @@ package org.wallet.in.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 import org.wallet.application.WalletApplication;
 import org.wallet.domain.repository.DatabaseConnection;
 import org.wallet.domain.repository.LiquibaseManager;

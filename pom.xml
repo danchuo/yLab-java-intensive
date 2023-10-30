@@ -21,9 +21,9 @@
         <liquibase.version>4.24.0</liquibase.version>
         <testcontainers.version>1.19.1</testcontainers.version>
         <mockito-junit-jupiter.version>5.3.1</mockito-junit-jupiter.version>
-        <tomcat.version>9.0.74</tomcat.version>
+        <tomcat.version>10.1.7</tomcat.version>
         <aspectj.version>1.9.20.1</aspectj.version>
-        <servlet.version>2.5</servlet.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jackson.version>2.15.3</jackson.version>
         <plugin.war.version>3.3.1</plugin.war.version>
@@ -97,9 +97,9 @@
             <version>${aspectj.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${servlet.version}</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
