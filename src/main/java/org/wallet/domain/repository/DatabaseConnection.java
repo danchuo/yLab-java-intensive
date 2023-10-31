@@ -5,18 +5,23 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.wallet.domain.repository.player.JdbcPlayerRepository;
 
 /**
  * The `DatabaseConnection` class represents a database connection manager. It provides methods to
  * establish a connection to a relational database.
  */
+@Component
+@RequiredArgsConstructor
 public class DatabaseConnection {
-  /** The URL for the JDBC database connection. */
-  private static String JDBC_URL;
 
   /** The username for the database connection. */
   private static String JDBC_USER;
+
+  /** The URL for the JDBC database connection. */
+  private static String JDBC_URL;
 
   /** The password for the database connection. */
   private static String JDBC_PASSWORD;
@@ -26,17 +31,14 @@ public class DatabaseConnection {
       Class.forName("org.postgresql.Driver");
       Properties properties = new Properties();
       ClassLoader classLoader = JdbcPlayerRepository.class.getClassLoader();
-      InputStream inputStream = classLoader.getResourceAsStream("application.properties");
+      InputStream inputStream = classLoader.getResourceAsStream("application.yml");
       properties.load(inputStream);
-      JDBC_URL = properties.getProperty("jdbc.url");
-      JDBC_USER = properties.getProperty("jdbc.user");
-      JDBC_PASSWORD = properties.getProperty("jdbc.password");
+      JDBC_URL = properties.getProperty("url");
+      JDBC_USER = properties.getProperty("username");
+      JDBC_PASSWORD = properties.getProperty("password");
     } catch (Exception ignored) {
     }
   }
-
-  /** Default constructor for creating a `DatabaseConnection` object. */
-  public DatabaseConnection() {}
 
   /**
    * Constructor for creating a `DatabaseConnection` object with a custom JDBC URL.

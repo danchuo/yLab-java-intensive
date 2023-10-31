@@ -22,6 +22,6 @@ public class PlayerRequestDto implements Validator {
   @Override
   @JsonIgnore
   public boolean isValid() {
-    return login != null && password != null;
+    return login != null && !login.isEmpty() && password != null && !password.isEmpty();
   }
 }

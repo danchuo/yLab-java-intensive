@@ -8,16 +8,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.wallet.domain.repository.DatabaseConnection;
-import org.wallet.exception.TransactionAlreadyExistException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.wallet.domain.model.Transaction;
 import org.wallet.domain.model.TransactionType;
+import org.wallet.domain.repository.DatabaseConnection;
+import org.wallet.exception.TransactionAlreadyExistException;
 
 /**
  * The `JdbcTransactionRepository` class is an implementation of the `TransactionRepository`
  * interface. It provides methods for interacting with transaction data in a relational database.
  */
+@Repository
+@RequiredArgsConstructor
 public class JdbcTransactionRepository implements TransactionRepository {
 
   private static final String SELECT_ALL_TRANSACTIONS_SQL = "SELECT * FROM wallet.transactions";
@@ -33,15 +36,6 @@ public class JdbcTransactionRepository implements TransactionRepository {
 
   /** The `DatabaseConnection` used to establish a connection to the database. */
   private final DatabaseConnection databaseConnection;
-
-  /**
-   * Constructs a new `JdbcTransactionRepository` with the provided `DatabaseConnection`.
-   *
-   * @param databaseConnection The database connection to be used for transaction data access.
-   */
-  public JdbcTransactionRepository(DatabaseConnection databaseConnection) {
-    this.databaseConnection = databaseConnection;
-  }
 
   /**
    * Retrieves a list of all transactions from the database.

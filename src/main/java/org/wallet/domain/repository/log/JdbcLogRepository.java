@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.wallet.domain.repository.DatabaseConnection;
 import org.wallet.domain.model.LogAction;
 import org.wallet.domain.model.Log;
@@ -17,6 +19,8 @@ import org.wallet.domain.model.Log;
  * The `JdbcLogRepository` class is an implementation of the `LogRepository` interface. It provides
  * methods for retrieving logs and adding new logs to a relational database.
  */
+@RequiredArgsConstructor
+@Repository
 public class JdbcLogRepository implements LogRepository {
   /** SQL query to select all logs from the database. */
   private static final String SELECT_ALL_LOGS_SQL = "SELECT * FROM wallet.logs";
@@ -27,15 +31,6 @@ public class JdbcLogRepository implements LogRepository {
 
   /** The `DatabaseConnection` used to establish a connection to the database. */
   private final DatabaseConnection databaseConnection;
-
-  /**
-   * Constructs a new `JdbcLogRepository` with the provided `DatabaseConnection`.
-   *
-   * @param databaseConnection The database connection to be used for log data access.
-   */
-  public JdbcLogRepository(DatabaseConnection databaseConnection) {
-    this.databaseConnection = databaseConnection;
-  }
 
   /**
    * Retrieves a list of log entries from the database.

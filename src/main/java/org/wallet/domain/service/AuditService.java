@@ -2,8 +2,10 @@ package org.wallet.domain.service;
 
 import java.util.Collections;
 import java.util.List;
-import org.wallet.domain.model.LogAction;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.wallet.domain.model.Log;
+import org.wallet.domain.model.LogAction;
 import org.wallet.domain.repository.log.LogRepository;
 
 /**
@@ -11,15 +13,13 @@ import org.wallet.domain.repository.log.LogRepository;
  * of actions, such as authorization, debit, credit, and exit. Log messages are stored in a
  * collection for later retrieval.
  */
+@Service
+@RequiredArgsConstructor
 public class AuditService {
 
   /** Collection to store log messages. */
   private final LogRepository logRepository;
-
-  public AuditService(LogRepository logRepository) {
-    this.logRepository = logRepository;
-  }
-
+  
   /**
    * Logs an audit action with the specified parameters.
    *

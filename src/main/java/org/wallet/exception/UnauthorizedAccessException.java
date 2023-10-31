@@ -12,6 +12,6 @@ public class UnauthorizedAccessException extends IllegalArgumentException {
    * authorized."
    */
   public UnauthorizedAccessException() {
-    super("User is not authorized.");
+    super("An authorization error occurred.");
   }
 }
