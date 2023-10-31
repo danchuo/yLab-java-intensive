@@ -5,31 +5,37 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
     <changeSet id="003-create-transaction-table" author="danchuo">
+        <!-- Create a sequence for the "id" field -->
         <createSequence sequenceName="transactions_id_seq" incrementBy="1" minValue="1"/>
+
+        <!-- Create a table "transactions" to store transaction records -->
         <createTable tableName="transactions">
+            <!-- Unique identifier for the transaction -->
             <column name="id" type="BIGINT" defaultValueComputed="nextval('transactions_id_seq'::regclass)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+
+            <!-- Player's login associated with the transaction -->
             <column name="player_login" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+
+            <!-- Unique identifier for the transaction, e.g., transaction ID or reference -->
             <column name="transaction_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+
+            <!-- Type of transaction, e.g., deposit, withdrawal, transfer -->
             <column name="type" type="VARCHAR(10)">
                 <constraints nullable="false"/>
             </column>
+
+            <!-- Amount of the transaction -->
             <column name="amount" type="NUMERIC">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-                <addForeignKeyConstraint baseTableName="transactions"
-                                         baseColumnNames="player_login"
-                                         constraintName="fk_player_login"
-                                         referencedTableName="players"
-                                         referencedColumnNames="login"
-                                         onDelete="NO ACTION"
-                                         onUpdate="NO ACTION"/>
     </changeSet>
+
 
 </databaseChangeLog>

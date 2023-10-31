@@ -6,6 +6,7 @@ import static org.wallet.utils.BigDecimalUtils.fromLong;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.wallet.domain.model.Player;
 import org.wallet.exception.InsufficientMoneyException;
 
 public class PlayerTest {

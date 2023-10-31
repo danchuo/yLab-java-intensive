@@ -15,8 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.wallet.domain.repository.DatabaseConnection;
+import org.wallet.domain.repository.player.JdbcPlayerRepository;
+import org.wallet.domain.repository.LiquibaseManager;
+import org.wallet.domain.repository.player.PlayerRepository;
 import org.wallet.exception.PlayerAlreadyExistException;
-import org.wallet.model.Player;
+import org.wallet.domain.model.Player;
 
 @Testcontainers
 public class JdbcPlayerRepositoryTest {

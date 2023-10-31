@@ -12,12 +12,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.wallet.domain.service.TransactionService;
 import org.wallet.exception.InsufficientMoneyException;
 import org.wallet.exception.TransactionAlreadyExistException;
-import org.wallet.model.Player;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
-import org.wallet.repository.TransactionRepository;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
+import org.wallet.domain.repository.transaction.TransactionRepository;
 
 public class TransactionServiceTest {
 
@@ -136,7 +137,7 @@ public class TransactionServiceTest {
                 new Transaction(
                     "testPlayer", "transaction2", TransactionType.DEBIT, fromLong(30))));
 
-    List<Transaction> transactions = transactionService.getTransactionByPlayer(player);
+    List<Transaction> transactions = transactionService.getTransactionsByPlayer(player);
 
     assertThat(transactions).isNotEmpty().hasSize(2);
   }
@@ -148,7 +149,7 @@ public class TransactionServiceTest {
     when(transactionRepository.getTransactionsByPlayerLogin("testPlayer"))
         .thenReturn(new ArrayList<>());
 
-    List<Transaction> transactions = transactionService.getTransactionByPlayer(player);
+    List<Transaction> transactions = transactionService.getTransactionsByPlayer(player);
 
     assertThat(transactions).isEmpty();
   }

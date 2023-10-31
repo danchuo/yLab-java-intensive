@@ -2,16 +2,16 @@ package org.wallet.application;
 
 import java.util.List;
 import lombok.Getter;
+import org.wallet.domain.model.Log;
+import org.wallet.domain.model.LogAction;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
+import org.wallet.domain.service.AuditService;
+import org.wallet.domain.service.PlayerService;
+import org.wallet.domain.service.TransactionService;
 import org.wallet.exception.PlayerNotFoundException;
 import org.wallet.exception.UnauthorizedAccessException;
-import org.wallet.log.LogAction;
-import org.wallet.model.Log;
-import org.wallet.model.Player;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
-import org.wallet.service.AuditService;
-import org.wallet.service.PlayerService;
-import org.wallet.service.TransactionService;
 
 /**
  * The {@code WalletApplication} class represents an application for managing player wallets and
@@ -24,7 +24,6 @@ public class WalletApplication {
   private final PlayerService playerService;
 
   private final AuditService auditService;
-
   @Getter private Player currentPlayer;
 
   /**
@@ -42,6 +41,18 @@ public class WalletApplication {
     this.playerService = playerService;
     this.auditService = auditService;
   }
+
+  /**
+   * Sets the current player based on the provided login. If a player with the specified login is found,
+   * the current player is set to that player. If no player is found, a {@link PlayerNotFoundException} is thrown.
+   *
+   * @param login The login of the player to set as the current player.
+   * @throws PlayerNotFoundException If no player with the specified login is found.
+   */
+  public void setCurrentPlayer(String login) {
+    currentPlayer = playerService.getPlayerByLogin(login).orElseThrow(PlayerNotFoundException::new);
+  }
+
 
   /**
    * Registers a new player with the specified login and password.
@@ -68,17 +79,6 @@ public class WalletApplication {
     } catch (PlayerNotFoundException e) {
       auditService.log(LogAction.AUTHORIZATION, login, "Login failed: " + e.getMessage());
       throw e;
-    }
-  }
-
-  /**
-   * Logs out the currently logged-in player. If there is a player logged in, this method logs the
-   * player out and sets the currentPlayer to null. If no player is logged in, it does nothing.
-   */
-  public void logout() {
-    if (currentPlayer != null) {
-      auditService.log(LogAction.EXIT, currentPlayer.getLogin(), "User logged out.");
-      currentPlayer = null;
     }
   }
 
@@ -122,6 +122,7 @@ public class WalletApplication {
             transaction.type() == TransactionType.DEBIT ? LogAction.DEBIT : LogAction.CREDIT,
             currentPlayer.getLogin(),
             "Transaction failed: " + e.getMessage());
+        throw e;
       }
     }
   }
@@ -137,7 +138,7 @@ public class WalletApplication {
     if (currentPlayer == null) {
       throw new UnauthorizedAccessException();
     }
-    return transactionService.getTransactionByPlayer(currentPlayer);
+    return transactionService.getTransactionsByPlayer(currentPlayer);
   }
 
   /**

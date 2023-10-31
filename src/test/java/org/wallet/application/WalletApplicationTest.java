@@ -12,13 +12,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.wallet.exception.PlayerNotFoundException;
 import org.wallet.exception.UnauthorizedAccessException;
-import org.wallet.log.LogAction;
-import org.wallet.model.Player;
-import org.wallet.model.Transaction;
-import org.wallet.model.TransactionType;
-import org.wallet.service.AuditService;
-import org.wallet.service.PlayerService;
-import org.wallet.service.TransactionService;
+import org.wallet.domain.model.LogAction;
+import org.wallet.domain.model.Player;
+import org.wallet.domain.model.Transaction;
+import org.wallet.domain.model.TransactionType;
+import org.wallet.domain.service.AuditService;
+import org.wallet.domain.service.PlayerService;
+import org.wallet.domain.service.TransactionService;
 import org.wallet.utils.BigDecimalUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,27 +64,6 @@ public class WalletApplicationTest {
         .isInstanceOf(PlayerNotFoundException.class);
     verify(auditService)
         .log(eq(LogAction.AUTHORIZATION), eq(TEST_USER), startsWith("Login failed:"));
-  }
-
-  @Test
-  @DisplayName("Logging out should set the current player to null and log the exit action")
-  public void testLogout() {
-    Player player = new Player(TEST_USER, TEST_PASSWORD);
-    when(playerService.registerPlayer(TEST_USER, TEST_PASSWORD)).thenReturn(player);
-    walletApplication.registerPlayer(player.getLogin(), player.getPassword());
-
-    walletApplication.logout();
-
-    assertThat(walletApplication.getCurrentPlayer()).isNull();
-    verify(auditService).log(eq(LogAction.EXIT), eq(player.getLogin()), eq("User logged out."));
-  }
-
-  @Test
-  @DisplayName("Logout when currentPlayer is null should not log any action")
-  public void logout_whenCurrentPlayerIsNull_shouldNotLogAnyAction() {
-    walletApplication.logout();
-
-    verify(auditService, never()).log(any(), any(), any());
   }
 
   @Test
