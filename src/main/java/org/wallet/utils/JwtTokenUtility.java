@@ -12,15 +12,18 @@ import java.util.Properties;
 import java.util.TimeZone;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.stereotype.Component;
 
 /**
  * The `JwtTokenUtility` class provides utility methods for creating, validating, and extracting
  * information from JWT (JSON Web Token).
  */
+@Component
 public final class JwtTokenUtility {
   private static final int EXPIRATION_MILLIS = 3600000;
-  private static final String SECRET_KEY;
   private static final ObjectMapper OBJECT_MAPPER;
+
+  private static final String SECRET_KEY;
 
   static {
     SECRET_KEY = loadSecretKeyFromProperties();
@@ -115,9 +118,9 @@ public final class JwtTokenUtility {
     try {
       Properties properties = new Properties();
       ClassLoader classLoader = JwtTokenUtility.class.getClassLoader();
-      InputStream inputStream = classLoader.getResourceAsStream("application.properties");
+      InputStream inputStream = classLoader.getResourceAsStream("application.yml");
       properties.load(Objects.requireNonNull(inputStream));
-      return properties.getProperty("secretKeyJwt");
+      return properties.getProperty("secret-key");
     } catch (IOException ignored) {
       return "secretKeyJwt";
     }

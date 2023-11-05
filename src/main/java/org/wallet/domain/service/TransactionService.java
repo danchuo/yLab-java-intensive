@@ -2,30 +2,25 @@ package org.wallet.domain.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import org.wallet.exception.InsufficientMoneyException;
-import org.wallet.exception.TransactionAlreadyExistException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.wallet.domain.model.Player;
 import org.wallet.domain.model.Transaction;
 import org.wallet.domain.model.TransactionType;
 import org.wallet.domain.repository.transaction.TransactionRepository;
+import org.wallet.exception.InsufficientMoneyException;
+import org.wallet.exception.TransactionAlreadyExistException;
 
 /**
  * The `TransactionService` class provides functionality to interact with transactions and perform
  * various operations related to transactions.
  */
+@Service
+@RequiredArgsConstructor
 public class TransactionService {
 
   /** The repository for managing transactions. */
   private final TransactionRepository transactionRepository;
-
-  /**
-   * Constructs a new `TransactionService` with the specified transaction repository.
-   *
-   * @param transactionRepository The repository for managing transactions.
-   */
-  public TransactionService(TransactionRepository transactionRepository) {
-    this.transactionRepository = transactionRepository;
-  }
 
   /**
    * Checks if a transaction with the given transaction ID exists.
@@ -76,16 +71,16 @@ public class TransactionService {
    * @throws TransactionAlreadyExistException If a transaction with the same ID already exists.
    */
   public void registerTransaction(Player player, Transaction transaction) {
-      if (isTransactionExist(transaction.transactionId())) {
-          throw new TransactionAlreadyExistException();
-      } else {
-          if (transaction.type() == TransactionType.CREDIT) {
-              processCreditTransaction(player, transaction);
-          } else if (transaction.type() == TransactionType.DEBIT) {
-              processDebitTransaction(player, transaction);
-          }
-          transactionRepository.addTransaction(transaction);
+    if (isTransactionExist(transaction.transactionId())) {
+      throw new TransactionAlreadyExistException();
+    } else {
+      if (transaction.type() == TransactionType.CREDIT) {
+        processCreditTransaction(player, transaction);
+      } else if (transaction.type() == TransactionType.DEBIT) {
+        processDebitTransaction(player, transaction);
       }
+      transactionRepository.addTransaction(transaction);
+    }
   }
 
   /**

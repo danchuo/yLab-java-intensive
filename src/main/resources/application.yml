@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    username: danchuo
+    password: helpmepls1
+    url: jdbc:postgresql://localhost:49155/wallet
+  liquibase:
+    default-schema: wallet
+    liquibase-schema: wallet_log
+  application:
+    changelog-file: db/changelog/changelog.xml
+  security:
+    jwt:
+      secret-key: helpmepls

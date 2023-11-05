@@ -8,15 +8,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+import org.wallet.domain.model.Player;
 import org.wallet.domain.repository.DatabaseConnection;
 import org.wallet.exception.PlayerAlreadyExistException;
-import org.wallet.domain.model.Player;
 
 /**
  * The `JdbcPlayerRepository` class is an implementation of the `PlayerRepository` interface. It
  * provides methods for interacting with player data in a relational database.
  */
+@Repository
+@RequiredArgsConstructor
 public class JdbcPlayerRepository implements PlayerRepository {
 
   private static final String SELECT_ALL_PLAYERS_SQL = "SELECT * FROM wallet.players";
@@ -31,15 +34,6 @@ public class JdbcPlayerRepository implements PlayerRepository {
 
   /** The `DatabaseConnection` used to establish a connection to the database. */
   private final DatabaseConnection databaseConnection;
-
-  /**
-   * Constructs a new `JdbcPlayerRepository` with the provided `DatabaseConnection`.
-   *
-   * @param databaseConnection The database connection to be used for player data access.
-   */
-  public JdbcPlayerRepository(DatabaseConnection databaseConnection) {
-    this.databaseConnection = databaseConnection;
-  }
 
   /**
    * Retrieves a list of all players from the database.

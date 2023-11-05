@@ -4,18 +4,18 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
 import org.wallet.aop.annotations.Timed;
 
 /**
- * This aspect provides method execution time measurement for methods or classes annotated with {@link Timed}.
- * It logs the execution time of the annotated methods.
+ * This aspect provides method execution time measurement for methods or classes annotated with
+ * {@link Timed}. It logs the execution time of the annotated methods.
  */
 @Aspect
+@Component
 public class TimedAspect {
 
-  /**
-   * Pointcut for methods within classes annotated with {@link Timed} and any execution.
-   */
+  /** Pointcut for methods within classes annotated with {@link Timed} and any execution. */
   @Pointcut("within(@org.wallet.aop.annotations.Timed *) && execution(* *(..))")
   public void annotatedByTimed() {}
 
@@ -33,11 +33,11 @@ public class TimedAspect {
     var result = proceedingJoinPoint.proceed();
     var endTime = System.currentTimeMillis();
     System.out.println(
-            "Execution of method "
-                    + proceedingJoinPoint.getSignature()
-                    + " finished. Execution time is "
-                    + (endTime - startTime)
-                    + " ms");
+        "Execution of method "
+            + proceedingJoinPoint.getSignature()
+            + " finished. Execution time is "
+            + (endTime - startTime)
+            + " ms");
     return result;
   }
 }

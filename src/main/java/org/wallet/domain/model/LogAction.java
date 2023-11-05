@@ -1,19 +1,27 @@
 package org.wallet.domain.model;
 
-/**
- * The {@code LogAction} enum represents different actions for logging in a financial application.
- * It defines the following actions: AUTHORIZATION, DEBIT, CREDIT, and EXIT.
- */
+import lombok.Getter;
+
+/** The `LogAction` enum represents different actions that can be logged in the system. */
+@Getter
 public enum LogAction {
-  /** Represents an authorization action. */
-  AUTHORIZATION,
+  /** Represents the action of user registration. */
+  REGISTRATION("User registered."),
 
-  /** Represents a debit action. */
-  DEBIT,
+  /** Represents the action of user authorization (login). */
+  AUTHORIZATION("User logged in."),
 
-  /** Represents a credit action. */
-  CREDIT,
+  /** Represents the action of registering a transaction. */
+  TRANSACTION("Transaction registered");
 
-  /** Represents an exit action. */
-  EXIT
+  private final String details;
+
+  /**
+   * Creates a new `LogAction` with the given details.
+   *
+   * @param details Details of the log action.
+   */
+  LogAction(String details) {
+    this.details = details;
+  }
 }

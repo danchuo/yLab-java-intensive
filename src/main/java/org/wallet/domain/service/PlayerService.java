@@ -1,6 +1,9 @@
 package org.wallet.domain.service;
 
 import java.util.Optional;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.wallet.domain.model.Player;
 import org.wallet.domain.repository.player.PlayerRepository;
 import org.wallet.exception.PlayerAlreadyExistException;
@@ -10,19 +13,12 @@ import org.wallet.utils.StringHasher;
  * The `PlayerService` class provides functionality to interact with player-related operations such
  * as player registration, login, and checking player existence.
  */
+@Service
+@RequiredArgsConstructor
 public class PlayerService {
 
   /** The repository for managing players. */
   private final PlayerRepository playerRepository;
-
-  /**
-   * Constructs a new `PlayerService` with the specified player repository.
-   *
-   * @param playerRepository The repository for managing players.
-   */
-  public PlayerService(PlayerRepository playerRepository) {
-    this.playerRepository = playerRepository;
-  }
 
   /**
    * Checks if a player with the given login exists.
@@ -99,5 +95,4 @@ public class PlayerService {
   public Optional<Player> getPlayerByLogin(String login) {
     return playerRepository.getPlayerByLogin(login);
   }
-
 }

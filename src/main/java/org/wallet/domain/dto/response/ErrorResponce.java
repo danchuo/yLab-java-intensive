@@ -1,6 +1,7 @@
 package org.wallet.domain.dto.response;
 
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 /**
  * The {@code ErrorResponce} class represents a Data Transfer Object (DTO) for providing error
@@ -9,7 +10,7 @@ import lombok.Data;
 @Data
 public class ErrorResponce {
   /** The error code associated with the error. */
-  private int code;
+  private HttpStatus code;
 
   /** The error message providing details about the error. */
   private String message;
@@ -21,7 +22,7 @@ public class ErrorResponce {
    * @param code The error code to set.
    * @param message The error message to set.
    */
-  public ErrorResponce(int code, String message) {
+  public ErrorResponce(HttpStatus code, String message) {
     this.code = code;
     this.message = message;
   }
