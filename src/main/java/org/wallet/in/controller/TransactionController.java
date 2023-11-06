@@ -1,17 +1,17 @@
 package org.wallet.in.controller;
 
+import com.danchuo.starterannotations.aop.annotations.Timed;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.wallet.aop.annotations.Authorized;
-import org.wallet.aop.annotations.Timed;
 import org.wallet.application.WalletApplication;
 import org.wallet.domain.dto.mapper.TransactionMapper;
 import org.wallet.domain.dto.request.JwtTokenResponseDto;
@@ -36,11 +36,11 @@ public class TransactionController {
    * Creates a new transaction based on the provided request data.
    *
    * @param requestDto The transaction request data.
-   * @return A response entity indicating the status of the transaction creation.
    */
   @Authorized
   @PostMapping(value = "/transaction", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> createTransaction(@RequestBody TransactionRequestDto requestDto) {
+  @ResponseStatus(HttpStatus.CREATED)
+  public void createTransaction(@RequestBody TransactionRequestDto requestDto) {
     var login = JwtTokenUtility.getLogin(requestDto.getJwtToken());
 
     if (!requestDto.isValid()) {
@@ -49,10 +49,7 @@ public class TransactionController {
 
     Transaction transaction =
         TransactionMapper.INSTANCE.transactionRequestDtoToTransaction(requestDto);
-
     walletApplication.registerTransaction(transaction);
-
-    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   /**
