@@ -1,15 +1,15 @@
 package org.wallet.in.controller;
 
+import com.danchuo.starterannotations.aop.annotations.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.wallet.aop.annotations.Authorized;
-import org.wallet.aop.annotations.Timed;
 import org.wallet.application.WalletApplication;
 import org.wallet.domain.dto.request.JwtTokenResponseDto;
 import org.wallet.domain.dto.request.PlayerRequestDto;
@@ -32,16 +32,15 @@ public class PlayerController {
    * Registers a new player with the provided request data.
    *
    * @param request The player registration request data.
-   * @return A response entity indicating the registration status.
    */
   @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> register(@RequestBody PlayerRequestDto request) {
+  @ResponseStatus(HttpStatus.CREATED)
+  public void register(@RequestBody PlayerRequestDto request) {
     if (!request.isValid()) {
       throw new InvalidRequestException();
     }
 
     walletApplication.registerPlayer(request.getLogin(), request.getPassword());
-    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   /**

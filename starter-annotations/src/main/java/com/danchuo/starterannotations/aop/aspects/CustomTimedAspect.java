@@ -1,11 +1,11 @@
-package org.wallet.aop.aspects;
+package com.danchuo.starterannotations.aop.aspects;
 
+import com.danchuo.starterannotations.aop.annotations.Timed;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-import org.wallet.aop.annotations.Timed;
 
 /**
  * This aspect provides method execution time measurement for methods or classes annotated with
@@ -13,10 +13,10 @@ import org.wallet.aop.annotations.Timed;
  */
 @Aspect
 @Component
-public class TimedAspect {
+public class CustomTimedAspect {
 
   /** Pointcut for methods within classes annotated with {@link Timed} and any execution. */
-  @Pointcut("within(@org.wallet.aop.annotations.Timed *) && execution(* *(..))")
+  @Pointcut("within(@com.danchuo.starterannotations.aop.annotations.Timed *) && execution(* *(..))")
   public void annotatedByTimed() {}
 
   /**
@@ -29,9 +29,9 @@ public class TimedAspect {
   @Around("annotatedByTimed()")
   public Object timeMetering(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
     System.out.println("Calling method " + proceedingJoinPoint.getSignature());
-    var startTime = System.currentTimeMillis();
-    var result = proceedingJoinPoint.proceed();
-    var endTime = System.currentTimeMillis();
+    long startTime = System.currentTimeMillis();
+    Object result = proceedingJoinPoint.proceed();
+    long endTime = System.currentTimeMillis();
     System.out.println(
         "Execution of method "
             + proceedingJoinPoint.getSignature()

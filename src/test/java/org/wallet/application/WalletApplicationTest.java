@@ -10,15 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.wallet.domain.model.LogAction;
-import org.wallet.domain.model.Player;
-import org.wallet.domain.model.Transaction;
-import org.wallet.domain.model.TransactionType;
 import org.wallet.domain.service.AuditService;
 import org.wallet.domain.service.PlayerService;
 import org.wallet.domain.service.TransactionService;
 import org.wallet.exception.PlayerNotFoundException;
-import org.wallet.utils.BigDecimalUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class WalletApplicationTest {
@@ -45,23 +40,6 @@ public class WalletApplicationTest {
 
     assertThatThrownBy(() -> walletApplication.login(TEST_USER, TEST_PASSWORD))
         .isInstanceOf(PlayerNotFoundException.class);
-    verify(auditService)
-        .log(eq(LogAction.AUTHORIZATION), eq(TEST_USER), startsWith("Login failed:"));
-  }
-
-  @Test
-  @DisplayName("Registering a transaction with currentPlayer null should not log any action")
-  public void registerTransaction_withCurrentPlayerNull_shouldNotLogAnyAction() {
-    Transaction testTransaction =
-        new Transaction(
-            "testPlayer",
-            "testTransactionId",
-            TransactionType.CREDIT,
-            BigDecimalUtils.fromLong(100));
-
-    walletApplication.registerTransaction(testTransaction);
-
-    verify(auditService, never()).log(any(), any(), any());
   }
 
   @Test

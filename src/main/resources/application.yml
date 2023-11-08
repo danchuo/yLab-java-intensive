@@ -11,3 +11,5 @@ spring:
   security:
     jwt:
       secret-key: helpmepls
+server:
+  port: 8086
